@@ -38,7 +38,7 @@ for benchmark in ${BENCHMARKS_TO_RUN}; do
 
 	# Start the gRPC Server container
 	docker run --name "${NAME}" --rm \
-		--cpus "${GRPC_SERVER_CPUS}" \
+		--cpuset-cpus "0-$((GRPC_SERVER_CPUS-1))" \
 		--memory "${GRPC_SERVER_RAM}" \
 		-e GRPC_SERVER_CPUS \
 		-e GRPC_SERVER_RAM \
@@ -53,7 +53,7 @@ for benchmark in ${BENCHMARKS_TO_RUN}; do
       	echo -n "Warming up the service for ${GRPC_BENCHMARK_WARMUP}... "
     	docker run --name ghz --rm --network=host -v "${PWD}/proto:/proto:ro" \
     	    -v "${PWD}/payload:/payload:ro" \
-    		--cpus $GRPC_CLIENT_CPUS \
+    		--cpuset-cpus $GRPC_SERVER_CPUS-$((GRPC_SERVER_CPUS+GRPC_CLIENT_CPUS-1)) \
     		ghz_bench:latest \
     		--proto=/proto/helloworld/helloworld.proto \
     		--call=helloworld.Greeter.SayHello \
@@ -79,7 +79,7 @@ for benchmark in ${BENCHMARKS_TO_RUN}; do
 	# Start the gRPC Client
 	docker run --name ghz --rm --network=host -v "${PWD}/proto:/proto:ro" \
 	    -v "${PWD}/payload:/payload:ro" \
-		--cpus $GRPC_CLIENT_CPUS \
+		--cpuset-cpus $GRPC_SERVER_CPUS-$((GRPC_SERVER_CPUS+GRPC_CLIENT_CPUS-1)) \
 		ghz_bench:latest \
 		--proto=/proto/helloworld/helloworld.proto \
 		--call=helloworld.Greeter.SayHello \
