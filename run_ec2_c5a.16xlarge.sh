@@ -10,7 +10,7 @@ export GRPC_SERVER_RAM=512m
 export GRPC_CLIENT_CONNECTIONS=50
 export GRPC_CLIENT_CONCURRENCY=1000
 export GRPC_CLIENT_QPS=0
-export RPC_CLIENT_CPUS=36
+export GRPC_CLIENT_CPUS=36
 export GRPC_REQUEST_PAYLOAD=100B
 
 rm -fr java_openj9_grpc_gencon_bench # なぜかビルドに失敗する
